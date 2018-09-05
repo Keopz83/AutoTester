@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using SampleAssembly;
 using System.ComponentModel;
 using static AutoTester.Annotations;
 
@@ -15,25 +14,35 @@ namespace AutoTester
     public class TestAssembly
     {
 
-        public static void TestAll(string assemblyName) {
+        public static TestResults TestAll(string assemblyName) {
 
-            Assembly assembly = Assembly.ReflectionOnlyLoad("SampleAssembly");
+            Assembly assembly = Assembly.ReflectionOnlyLoad(assemblyName);
 
+            var passed = true;
+            
             foreach (Type type in assembly.GetTypes()) {
 
                 var runType = Type.GetType(type.AssemblyQualifiedName);
-                var typeInstance = Activator.CreateInstance(runType);
+                object typeInstance;
+                try {
+                    typeInstance = Activator.CreateInstance(runType);
+                } catch(Exception e) {
+                    Console.WriteLine($"Cannot create instance of type '{runType.FullName}'.");
+                    Console.WriteLine(e.ToString());
+                    passed = false;
+                    continue;
+                }
 
                 Console.WriteLine(type.Name);
 
-                foreach(MethodInfo methodInfo in (runType as TypeInfo).DeclaredMethods) {
+                foreach (MethodInfo methodInfo in (runType as TypeInfo).DeclaredMethods) {
 
                     Console.WriteLine();
                     PrintMethoSignature(methodInfo);
 
                     Console.WriteLine();
 
-                    var passed = true;
+                    
                     for(var testCase = 0; testCase < methodInfo.GetCustomAttributes().Count(); testCase++) {
 
                         Console.WriteLine($"\t\tTest case {testCase}:");
@@ -56,14 +65,12 @@ namespace AutoTester
                         }
                     }
 
-                    if (!passed) {
-                        Assert.Fail();
-                    }
                 }
 
                 Console.WriteLine();
             }
 
+            return new TestResults() { Succeeded = passed };
         }
 
         private static void PrintMethoSignature(MethodInfo methodInfo) {
@@ -75,5 +82,18 @@ namespace AutoTester
         private static string PrintValues(params object[] values) {
             return string.Join(", ", values.Select(x => x.ToString()));
         }
+
+        //public Dictionary<string, Tuple<object[], object>> TestValues = new Dictionary<string, Tuple<object[], object>>() {
+        //    {nameof(Class1.NameLengthMatch), new Tuple<object[], object>(new object[] { new Client("Jose"), 4 }, true) }
+        //};
+
+        //public object[] GetInputs(string methodName) {
+        //    switch (methodName) {
+        //        case nameof(NameLengthMatch):
+        //            return new object[] { new Client("Jose"), 3 };
+        //        default:
+        //            return null;
+        //    }
+        //}
     }
 }

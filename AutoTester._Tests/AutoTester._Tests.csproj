@@ -7,8 +7,8 @@
     <ProjectGuid>{CEF3F52C-0328-43F8-A264-0288610B231F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SampleAssembly._Tests</RootNamespace>
-    <AssemblyName>SampleAssembly._Tests</AssemblyName>
+    <RootNamespace>AutoTester._Tests</RootNamespace>
+    <AssemblyName>AutoTester._Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,14 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestClass1.cs" />
+    <Compile Include="TestAssemblyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SampleAssembly\SampleAssembly.csproj">
+    <ProjectReference Include="..\AutoTester\AutoTester.csproj">
+      <Project>{6ad26feb-b3ce-41bc-84ad-baecea925ae1}</Project>
+      <Name>AutoTester</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SampleAssembly\SampleAssembly.csproj">
       <Project>{aba34615-e46f-40c9-a7c0-819fc4b78c44}</Project>
       <Name>SampleAssembly</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
