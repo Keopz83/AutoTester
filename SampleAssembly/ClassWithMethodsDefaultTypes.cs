@@ -12,6 +12,7 @@ namespace SampleAssembly {
 
         public ClassWithMethodsDefaultTypes() { }
 
+        //TODO: remove notifications from code (use a file with testcases instead, which template is generated from code?)
         [TestCaseValues(Inputs = new object[] { 1, 2 }, Output = 3)]
         [TestCaseValues(Inputs = new object[] { 3, 4 }, Output = 7)]
         public int SumTwoInts(int a, int b) {
