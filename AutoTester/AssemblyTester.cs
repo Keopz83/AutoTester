@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using static AutoTester.Annotations;
+using System.Runtime.Serialization;
 
 namespace AutoTester
 {
 
-    public class TestAssembly
+    public class AssemblyTester
     {
+
 
         public static TestResults TestAll(string assemblyName) {
 
@@ -25,7 +27,7 @@ namespace AutoTester
                 var runType = Type.GetType(type.AssemblyQualifiedName);
                 object typeInstance;
                 try {
-                    typeInstance = Activator.CreateInstance(runType);
+                    typeInstance = Instantiator.InstanstiateClass(runType); // Activator.CreateInstance(runType);
                 } catch(Exception e) {
                     Console.WriteLine($"Cannot create instance of type '{runType.FullName}'.");
                     Console.WriteLine(e.ToString());
@@ -45,9 +47,23 @@ namespace AutoTester
                     
                     for(var testCase = 0; testCase < methodInfo.GetCustomAttributes().Count(); testCase++) {
 
-                        Console.WriteLine($"\t\tTest case {testCase}:");
+                        if(methodInfo.GetParameters().Count() == 0) {
+                            Console.WriteLine("\t\t-- Method receives no inputs. --");
+                            continue;
+                        }
+
+                        if (methodInfo.GetCustomAttributes().Count() == 0) {
+                            Console.WriteLine("\t\t-- No test cases defined. --");
+                            continue;
+                        }
 
                         var testCaseValues = (methodInfo.GetCustomAttributes().ElementAt(testCase) as TestCaseValues);
+                        if (testCaseValues == null) {
+                            Console.WriteLine("\t\t-- No test cases defined. --");
+                            continue;
+                        }
+                        Console.WriteLine($"\t\tTest case {testCase}:");
+
                         var testInputValues = testCaseValues.Inputs.ToArray();
                         var expectedOutput = testCaseValues.Output;
 

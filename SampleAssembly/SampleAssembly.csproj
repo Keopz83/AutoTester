@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ClassWithMethodCustomType.cs" />
+    <Compile Include="ClassWithMethodsDefaultTypes.cs" />
+    <Compile Include="ClassWithDefaultCtr.cs" />
+    <Compile Include="ClassWithoutDefaultCtr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

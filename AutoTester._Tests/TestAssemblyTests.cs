@@ -11,10 +11,21 @@ namespace AutoTester._Tests
     public class TestAssemblyTests
     {
 
+
+        [TestMethod]
+        public void CanInstanstiateClassWithoutDefaultCtr() {
+
+            var expectedType = typeof(SampleAssembly.ClassWithoutDefaultCtr);
+            var obj = Instantiator.InstanstiateClass(typeof(SampleAssembly.ClassWithoutDefaultCtr));
+            Assert.AreEqual(expectedType, obj.GetType());
+        }
+
+
+
         [TestMethod]
         public void TestAll_suceeds() {
 
-            var testResults = TestAssembly.TestAll("SampleAssembly");
+            var testResults = AssemblyTester.TestAll("SampleAssembly");
             Assert.IsTrue(testResults.Succeeded, "Expects test to succeed.");
         }
     }
