@@ -16,6 +16,24 @@ namespace AutoTester._Tests
     public class TestAssemblyTests
     {
 
+        [TestMethod]
+        public void CanInvokeMethodsWithCustomTypes() {
+
+
+        }
+
+
+        [TestMethod]
+        public void CanInstantiateCustomTypesWithRandomValues() {
+
+
+        }
+
+        [TestMethod]
+        public void CanInstantiateDefaultTypesWithRandomValues() {
+
+
+        }
 
         [TestMethod]
         public void CanFindScopeWhereExternalVariableIsDefined() {

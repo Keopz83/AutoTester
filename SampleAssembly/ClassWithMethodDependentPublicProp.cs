@@ -14,7 +14,9 @@ namespace SampleAssembly {
         //TODO: test MethodInfluencedByPublicProp
         public bool MethodInfluencedByPublicProp(bool outProp) {
 
-            if(outProp && InfluencerPublicProp) {
+            bool internalVar = false;
+
+            if(outProp && InfluencerPublicProp && internalVar) {
                 return true;
             }
 
