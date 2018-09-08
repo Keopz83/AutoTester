@@ -17,6 +17,10 @@ namespace AutoTester {
 
         public CompilationUnitSyntax CompilationUnit { get; }
 
+        public IEnumerable<NamespaceDeclarationSyntax> Namespaces { get; }
+
+        public IEnumerable<ClassDeclarationSyntax> Classes { get; }
+
         public CSharpDocument(string csFilePath) {
 
             //CS document tree
@@ -26,63 +30,48 @@ namespace AutoTester {
 
             CompilationUnit = tree.GetRoot() as CompilationUnitSyntax;
             Assert.IsNotNull(CompilationUnit, "Expects non null CompilationUnitSyntax.");
+
+            //Namespace
+            Namespaces = CompilationUnit.Members.OfType<NamespaceDeclarationSyntax>();
+            Assert.IsTrue(Namespaces.Any(), "Expects at least 1 namespace.");
+            var classes = new List<ClassDeclarationSyntax>();
+            foreach (var nameSpace in Namespaces) {
+                
+                Console.WriteLine($"Namespace '{nameSpace.Name}':");
+
+                //Classes
+                var nameSpaceClasses = nameSpace.Members.OfType<ClassDeclarationSyntax>();
+                Assert.IsNotNull(classes, "Expects non null ClassDeclarationSyntax list.");
+                classes.AddRange(nameSpaceClasses);
+            }
+            Classes = classes;
         }
 
 
         public IEnumerable<string> GetExternalVars(string className, string methodName) {
 
-            //Namespace
-            var nameSpaceSyntax = CompilationUnit.Members.OfType<NamespaceDeclarationSyntax>().FirstOrDefault();
-            Assert.IsNotNull(nameSpaceSyntax, "Expects non null NamespaceDeclarationSyntax.");
-            Console.WriteLine($"Namespace '{nameSpaceSyntax.Name}':");
+            ClassDeclarationSyntax classDcl = GetClass(className);
+            Console.WriteLine($"Class '{classDcl.Identifier.Value}':");
 
-
-            //Classes
-            var classes = nameSpaceSyntax.Members.OfType<ClassDeclarationSyntax>();
-            Assert.IsNotNull(classes, "Expects non null ClassDeclarationSyntax list.");
-            var chosenClass = classes.Where(x => x.Identifier.ValueText.Equals(className)).FirstOrDefault();
-            Assert.IsNotNull(chosenClass, $"Could not find class with name '{className}'.");
-            Console.WriteLine($"Class '{chosenClass.Identifier.Value}':");
-
-
-            //Methods
-            var methods = chosenClass.Members.OfType<MethodDeclarationSyntax>();
-            Assert.IsNotNull(methods, "Expects non null MethodDeclarationSyntax list.");
-            var chosenMethod = methods.Where(x => x.Identifier.ValueText.Equals(methodName)).FirstOrDefault();
-
-            return GetMethodExternalVars(chosenMethod);
+            MethodDeclarationSyntax methodDcl = classDcl.GetMethod(methodName);
+            return methodDcl.GetMethodExternalVars();
         }
 
 
-        public static IEnumerable<string> GetMethodExternalVars(MethodDeclarationSyntax method) {
-
-            //Method arguments
-            var arguments = method.ParameterList.Parameters.Select(x => x.Identifier.Value);
-
-
-            //Method statements
-            Console.WriteLine($"Method '{method.Identifier.Value}':");
-            var methodBody = method.Body;
-            foreach (var statement in methodBody.Statements) {
-
-                Console.WriteLine("\t--------body statement-----------");
-                //Console.WriteLine(statement.ToString());
-
-                var variables = statement.DescendantNodes().OfType<IdentifierNameSyntax>().Distinct();
-                foreach (IdentifierNameSyntax variable in variables) {
-
-                    var externalVar = !arguments.Contains(variable.Identifier.Value);
-
-                    Console.WriteLine($"\t\tVar: '{variable}'. External: '{externalVar}'");
-
-                    if (externalVar) {
-                        yield return variable.ToString();
-                    }
-
-                }
-
-                Console.WriteLine("\t---------------------------------");
-            }
+        public ClassDeclarationSyntax GetClass(string className) {
+            var classDecl = Classes.Where(x => x.Identifier.ValueText.Equals(className)).FirstOrDefault();
+            Assert.IsNotNull(classDecl, $"Could not find class with name '{className}'.");
+            return classDecl;
         }
+
+
+        public IEnumerable<MethodDeclarationSyntax> AllMethods => Classes.SelectMany(x => x.GetMethods());
+
+
+        public IEnumerable<MethodDeclarationSyntax> GetMethodsWithExternalVars(string className) {
+
+            return AllMethods.Where(x => x.GetMethodExternalVars().Any());
+        }
+
     }
 }

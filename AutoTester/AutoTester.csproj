@@ -177,6 +177,7 @@
     <Compile Include="CSharpParser.cs" />
     <Compile Include="Instantiator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoslynExtensions.cs" />
     <Compile Include="TestResults.cs" />
   </ItemGroup>
   <ItemGroup>

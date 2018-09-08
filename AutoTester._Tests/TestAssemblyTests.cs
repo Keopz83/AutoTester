@@ -16,6 +16,33 @@ namespace AutoTester._Tests
     public class TestAssemblyTests
     {
 
+
+        [TestMethod]
+        public void CanFindScopeWhereExternalVariableIsDefined() {
+
+
+        }
+
+
+        [TestMethod]
+        public void CanFindMethodsWithExternalVariables() {
+
+            //Arrange
+            var sourceFolder = @"C:\Users\user1\source\repos\AutoTester\SampleAssembly";
+            var csFileName = "ClassWithMethodDependentPublicProp.cs";
+            var className = Path.GetFileNameWithoutExtension(csFileName);
+            var csFilePath = Path.Combine(sourceFolder, csFileName);
+            var compUnit = new CSharpDocument(csFilePath);
+
+            //Act
+            var methodsWithExtVariables = compUnit.GetMethodsWithExternalVars(className);
+
+            //Assert
+            Assert.AreEqual(1, methodsWithExtVariables.Count(), "Unexpected number of methods.");
+            Assert.AreEqual("MethodInfluencedByPublicProp", methodsWithExtVariables.First().Identifier.ValueText, "Unexpected method name.");
+        }
+
+
         [TestMethod]
         public void CanFindVariableExternalFromMethod() {
 
