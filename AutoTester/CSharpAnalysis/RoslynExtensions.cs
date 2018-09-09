@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoTester {
+namespace AutoTester.CSharpAnalysis {
 
 
     public static class RoslynExtensions {

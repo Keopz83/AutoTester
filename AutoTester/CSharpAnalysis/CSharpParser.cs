@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace AutoTester {
+namespace AutoTester.CSharpAnalysis {
 
 
     public class CSharpDocument {
@@ -33,18 +33,26 @@ namespace AutoTester {
 
             //Namespace
             Namespaces = CompilationUnit.Members.OfType<NamespaceDeclarationSyntax>();
-            Assert.IsTrue(Namespaces.Any(), "Expects at least 1 namespace.");
+            if (!Namespaces.Any()) {
+                PrintWarning($"Warning: file '{csFilePath}' contains no namespaces.");
+                return;
+            }
             var classes = new List<ClassDeclarationSyntax>();
             foreach (var nameSpace in Namespaces) {
                 
-                Console.WriteLine($"Namespace '{nameSpace.Name}':");
-
                 //Classes
                 var nameSpaceClasses = nameSpace.Members.OfType<ClassDeclarationSyntax>();
                 Assert.IsNotNull(classes, "Expects non null ClassDeclarationSyntax list.");
                 classes.AddRange(nameSpaceClasses);
             }
             Classes = classes;
+        }
+
+
+        public static void PrintWarning(string message) {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
 

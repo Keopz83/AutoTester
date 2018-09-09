@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static AutoTester.Annotations;
+using static AutoTester.Annotations.Annotations;
 
 namespace SampleAssembly {
 
@@ -13,22 +13,22 @@ namespace SampleAssembly {
         public ClassWithMethodsDefaultTypes() { }
 
         //TODO: remove notifications from code (use a file with testcases instead, which template is generated from code?)
-        [TestCaseValues(Inputs = new object[] { 1, 2 }, Output = 3)]
-        [TestCaseValues(Inputs = new object[] { 3, 4 }, Output = 7)]
+        [TestCaseAttribute(Inputs = new object[] { 1, 2 }, Output = 3)]
+        [TestCaseAttribute(Inputs = new object[] { 3, 4 }, Output = 7)]
         public int SumTwoInts(int a, int b) {
             return a + b;
         }
 
 
-        [TestCaseValues(Inputs = new object[] { 1, 2 }, Output = 2)]
-        [TestCaseValues(Inputs = new object[] { 3, 4 }, Output = 12)]
+        [TestCaseAttribute(Inputs = new object[] { 1, 2 }, Output = 2)]
+        [TestCaseAttribute(Inputs = new object[] { 3, 4 }, Output = 12)]
         public int MultiplyTwoInts(int a, int b) {
             return a * b;
         }
 
 
-        [TestCaseValues(Inputs = new object[] { "a", 1 }, Output = true)]
-        [TestCaseValues(Inputs = new object[] { "aa", 3 }, Output = false)]
+        [TestCaseAttribute(Inputs = new object[] { "a", 1 }, Output = true)]
+        [TestCaseAttribute(Inputs = new object[] { "aa", 3 }, Output = false)]
         public bool StringLengthMatch(string str, int count) {
             return str.Length == count;
         }
